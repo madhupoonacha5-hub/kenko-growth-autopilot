@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kenko Growth Autopilot</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%8C%B1%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&display=swap">
+<style>
+:root{--bg:#f1f4f5;--pn:#fff;--ink:#11202a;--mu:#586a76;--ln:#d6dee3;--bl:#0f6e8c;--F:#e8590c;--R:#c92a2a;--A:#d99a00;--G:#2b9348;
+--hf:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;--bf:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1920;--pn:#15252e;--ink:#e8eff3;--mu:#9db0bc;--ln:#294049;--bl:#4cb5d6;--F:#ff7a33;--R:#ff6b6b;--A:#f2b824;--G:#4cc26b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1920;--pn:#15252e;--ink:#e8eff3;--mu:#9db0bc;--ln:#294049;--bl:#4cb5d6;--F:#ff7a33;--R:#ff6b6b;--A:#f2b824;--G:#4cc26b;color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--bf)}
+main{max-width:1120px;margin:0 auto;padding:28px 18px 56px}
+h1,h2,h3{font-family:var(--hf);line-height:1.1;margin:0}
+h1{font-size:clamp(1.9rem,5vw,3rem);letter-spacing:-.02em}h2{font-size:1.3rem;margin-bottom:6px}h3{font-size:1rem;margin-bottom:4px}
+p{margin:0 0 8px}.mu{color:var(--mu)}.sm{font-size:.86rem}
+.pn{background:var(--pn);border:1px solid var(--ln);border-radius:10px;padding:16px}
+nav{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0}
+button{font:600 .9rem var(--bf);color:var(--ink);background:var(--pn);border:1px solid var(--ln);border-radius:8px;padding:8px 14px;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--bl);outline-offset:2px}
+button[aria-pressed=true],button.pri{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button:disabled{opacity:.5;cursor:default}
+.tab{display:none}.tab.on{display:block}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.kpi b{display:block;font:700 1.7rem var(--hf)}
+.stack{display:flex;height:16px;border-radius:4px;overflow:hidden;margin-top:8px;background:var(--ln)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.chip{border:1px solid var(--ln);border-radius:99px;padding:3px 12px;font-size:.82rem;background:var(--pn);transition:background .3s,color .3s}
+.chip.hot{background:var(--bl);color:var(--bg);border-color:var(--bl)}
+.grid{display:grid;grid-template-columns:minmax(260px,1fr) 1.6fr;gap:16px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.q{display:flex;width:100%;align-items:center;gap:10px;text-align:left;margin-bottom:6px;font-weight:500}
+.q[aria-pressed=true]{outline:2px solid var(--bl);background:var(--pn);color:var(--ink)}
+.q small{display:block;color:var(--mu)}.q span.n{flex:1}
+.bd{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:6px;color:#fff;font:700 .85rem var(--hf);flex:none}
+.bF{background:var(--F)}.bR{background:var(--R)}.bA{background:var(--A);color:#11202a}.bG{background:var(--G)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bd{color:#07131a}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.sig{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:.88rem}.sig>span:first-child{width:140px;flex:none}
+.tr{flex:1;height:10px;background:var(--ln);border-radius:5px;overflow:hidden}.tr i{display:block;height:100%;background:var(--bl);transition:width .4s}
+.big{font:700 2.6rem var(--hf)}
+ol.st{list-style:none;padding:0;margin:10px 0}ol.st li{padding:8px 0 8px 28px;border-top:1px solid var(--ln);position:relative;color:var(--mu)}
+ol.st li::before{content:"";position:absolute;left:4px;top:13px;width:12px;height:12px;border:2px solid var(--ln);border-radius:50%}
+ol.st li.d{color:var(--ink)}ol.st li.d::before{background:var(--G);border-color:var(--G)}
+#log{max-height:210px;overflow:auto;font-size:.84rem}#log div{padding:4px 0;border-top:1px solid var(--ln)}#log b{color:var(--bl)}
+label{display:flex;justify-content:space-between;margin-top:12px}
+input[type=range]{width:100%;accent-color:var(--bl)}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.bar{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:.88rem}.bar>span:first-child{width:240px;flex:none}
+@media(max-width:620px){.bar{flex-wrap:wrap}.bar>span:first-child{width:100%}}
+.bar .t{height:14px;border-radius:3px;background:var(--bl);transition:width .4s}
+footer{margin-top:36px;border-top:1px solid var(--ln);padding-top:14px;font-size:.84rem;color:var(--mu)}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>Kenko Growth Autopilot</h1>
+<p class="mu" style="max-width:66ch;margin-top:12px">A working emulator of how one customer-health layer can score every studio, run the right playbook, speed up onboarding and show leadership where the product should go next. Built around what Kenko says publicly: overnight migration, a dedicated onboarding coach, growth coaches and an AI marketing platform. All account data is synthetic.</p>
+<nav aria-label="Views"><button data-tab="cc" aria-pressed="true">Command center</button><button data-tab="ob" aria-pressed="false">Onboarding accelerator</button><button data-tab="pl" aria-pressed="false">Product demand ledger</button></nav>
+</header>
+
+<section id="cc" class="tab on">
+<div class="kpi" id="kpi"></div>
+<div class="chips" id="chips" aria-label="Connected sources"></div>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px"><button id="auto" aria-pressed="false">Start autopilot</button><button id="inj">Inject a bad week</button><button id="rst">Reset</button></div>
+<div class="grid">
+<div><h2>Daily queue</h2><p class="mu sm">Ranked by FRAG band, then ARR.</p><div id="queue"></div></div>
+<div class="pn" id="detail"></div>
+</div>
+<div class="pn" style="margin-top:16px"><h3>Live feed from connected sources</h3><div id="log" role="log" aria-label="Live feed"></div></div>
+</section>
+
+<section id="ob" class="tab">
+<h2>Onboarding accelerator</h2>
+<p class="mu" style="max-width:70ch">Kenko promises done-for-you migration with a dedicated coach, and it is hiring for migration automation. This shows one way to cut the human minutes per studio so the same team can absorb more inflow.</p>
+<div class="g2">
+<div class="pn"><h3>Harbor Pilates moves over from another platform</h3><button class="pri" id="obrun" style="margin:8px 0">Run onboarding</button>
+<div class="tr" style="height:12px"><i id="obp" style="width:0"></i></div><ol class="st" id="obs"></ol><p id="obsum" class="sm"></p></div>
+<div class="pn"><h3>How much inflow can the team absorb?</h3>
+<label>New studios per month <b id="nv"></b></label><input id="n" type="range" min="50" max="300" value="170">
+<div id="cap"></div>
+<p class="mu sm">Assumptions to verify: two specialists with 240 productive hours a month between them, 100 hours of multi-location rollouts, 25% of studios needing 3 hours today versus 15% needing 1.5 hours with launch packs and AI mapping.</p></div>
+</div></section>
+
+<section id="pl" class="tab">
+<h2>Product demand ledger</h2>
+<p class="mu" style="max-width:70ch">Every lost deal, escalation and request is tagged with its segment and ARR. After a quarter the executive team sees what is blocking growth, with chains and gyms separated from boutique. Figures below are illustrative.</p>
+<div class="pn"><div style="display:flex;flex-wrap:wrap;gap:6px" id="flt"></div><div id="led" style="margin-top:12px"></div><p id="ledt" style="font-weight:700;margin-top:10px"></p></div>
+</section>
+
+<footer>Emulator only. No live connections are made: the feed simulates read-only calls to billing, support, product usage, CRM, onboarding and engineering tools. Scores come from fixed rules, and the language model only explains and drafts. Public facts about Kenko come from its website, job listings and review sites; thresholds, pricing and take-rates here are assumptions to verify.</footer>
+</main>
+<script>
+const $=s=>document.querySelector(s),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const SRC=['Product usage','Billing','Support','CRM','Onboarding','Engineering','Claude'];
+const RAW=[['Lotus Pilates Group','Enterprise',6,41,-4,3,1,1,9,0,72],['Barre & Co','Enterprise',4,28,-14,1,3,2,6,0,66],['Flow State Yoga','Enterprise',5,33,-22,0,6,4,4,1,58],['Solstice Yoga','Growth',2,5.4,6,2,1,0,9,0,86],['Iron Lotus Studio','Growth',1,2,9,2,0,0,10,0,88],['Pulse Cycle Lab','Growth',2,4.8,-12,1,4,1,7,0,74],['Aura Barre','Core',1,1.8,-18,0,5,1,5,0,55],['Willow Yoga','Core',1,1.5,-5,0,0,0,8,0,40],['Kinetic Lagree','Core',1,1.8,0,1,0,0,8,0,62],['Peak Pole Studio','Core',1,1.5,3,2,1,0,9,0,78],['Nova Dance','Core',1,1.8,-9,1,2,1,6,0,60],['Zenith Training','Core',1,1.5,-20,0,7,2,4,0,35]];
+let A,sel=0,busy=false,timer=null,LOG=[],gen=0;
+const mk=()=>RAW.map(r=>({n:r[0],s:r[1],st:r[2],arr:r[3],u:r[4],c:r[5],p:r[6],t:r[7],q:r[8],x:r[9],cap:r[10],ex:0}));
+const cl=v=>Math.max(0,Math.min(100,v));
+const sig=a=>[['Usage trend',cl(80+a.u*3),30],['AI adoption',Math.min(a.c,3)/3*100,25],['Payments',cl(100-a.p*10),15],['Support load',cl(100-a.t*20),15],['Sentiment',a.q*10,15]];
+const score=a=>Math.round(sig(a).reduce((s,x)=>s+x[1]*x[2]/100,0));
+const band=a=>{const s=score(a);return a.x||s<25?'F':s<45?'R':s<70?'A':'G'};
+const rank={F:0,R:1,A:2,G:3},NM={F:'Fire',R:'Red',A:'Amber',G:'Green'};
+const PB={
+fire:{n:'Fire: executive escalation',o:'Named exec sponsor',sla:'24 hrs',s:[['Support','Pull open tickets and history'],['Engineering','Check incident and bug links for this studio'],['CRM','Alert the exec sponsor and book a recovery call'],['Claude','Draft the root-cause note and recovery offer']],f:a=>{a.x=0;a.t=Math.max(0,a.t-3);a.q=Math.min(10,a.q+3);a.u+=10}},
+pay:{n:'Payment recovery',o:'Coach or automation',sla:'7 days',s:[['Billing','List failed charges by member'],['Product usage','Trigger a card-update campaign'],['Billing','Enable smart retries and dunning']],f:a=>{a.p=1}},
+save:{n:'30-day Save Sprint',o:'Growth coach',sla:'30 days',s:[['Product usage','Compare check-ins with the studio’s own 60-day baseline'],['CRM','Fix schedule and pricing gaps with the owner'],['Claude','Draft a win-back campaign for lapsed members'],['CRM','Offer a step-down plan if still at risk']],f:a=>{a.u+=16;a.c=Math.max(a.c,1)}},
+camp:{n:'Launch first AI campaign',o:'Onboarding coach',sla:'5 days',s:[['Onboarding','Read brand and offers from setup data'],['Claude','Draft the first lead campaign for approval'],['Product usage','Go live and track first leads']],f:a=>{a.c=2;a.u+=6}},
+conc:{n:'Studio Launch Concierge',o:'Growth CSM',sla:'14 days',s:[['Product usage','Confirm 60 days above 80% capacity'],['Claude','Model location economics for the owner'],['CRM','Book a discovery call and hand off to the account manager']],f:a=>{a.ex=1}},
+aud:{n:'Monthly Growth Audit',o:'Commercial AM',sla:'Monthly',s:[['Product usage','Pull leads, trials and recovered payments'],['Claude','Write the one-page audit'],['CRM','Recommend an add-on and book a review']],f:a=>{a.u+=6;a.c=Math.max(a.c,2)}}};
+const pick=a=>a.x?'fire':a.p>=4?'pay':a.u<=-15?'save':a.c==0?'camp':(a.cap>=80&&!a.ex)?'conc':'aud';
+const order=()=>A.map((a,i)=>i).sort((i,j)=>rank[band(A[i])]-rank[band(A[j])]||A[j].arr-A[i].arr);
+const time=()=>new Date().toTimeString().slice(0,8);
+function log(src,txt){LOG.unshift(`<div>${time()} <b>${src}</b> ${txt}</div>`);LOG=LOG.slice(0,40);$('#log').innerHTML=LOG.join('');document.querySelectorAll('.chip').forEach(c=>{if(c.textContent===src){c.classList.add('hot');setTimeout(()=>c.classList.remove('hot'),700)}})}
+function kpi(){const t={F:0,R:0,A:0,G:0};A.forEach(a=>t[band(a)]+=a.arr);const tot=A.reduce((s,a)=>s+a.arr,0),ex=A.filter(a=>a.ex||(a.cap>=80&&band(a)=='G')).length;
+const col={F:'var(--F)',R:'var(--R)',A:'var(--A)',G:'var(--G)'};
+$('#kpi').innerHTML=`<div class="pn"><span class="mu sm">Sample portfolio ARR</span><b>$${tot.toFixed(1)}k</b><div class="stack">${'FRAG'.split('').map(k=>`<i style="width:${t[k]/tot*100}%;background:${col[k]}"></i>`).join('')}</div></div>
+<div class="pn"><span class="mu sm">ARR at risk (Fire and Red)</span><b style="color:var(--R)">$${(t.F+t.R).toFixed(1)}k</b><span class="mu sm">${A.filter(a=>'FR'.includes(band(a))).length} accounts</span></div>
+<div class="pn"><span class="mu sm">Accounts by band</span><b>${'FRAG'.split('').map(k=>`<span class="bd b${k}" style="margin-right:4px">${A.filter(a=>band(a)==k).length}</span>`).join('')}</b></div>
+<div class="pn"><span class="mu sm">Expansion ready or booked</span><b style="color:var(--G)">${ex}</b><span class="mu sm">Studio #2 conversations</span></div>`}
+function queue(){const fk=document.activeElement&&document.activeElement.dataset&&document.activeElement.dataset.i;$('#queue').innerHTML=order().map(i=>{const a=A[i],b=band(a);return `<button class="q" data-i="${i}" aria-pressed="${i==sel}"><span class="bd b${b}" title="${NM[b]}">${b}</span><span class="n">${a.n}<small>${a.s}, ${a.st} ${a.st>1?'studios':'studio'}, $${a.arr}k, CHI ${score(a)}</small></span></button>`}).join('');
+document.querySelectorAll('.q').forEach(b=>b.onclick=()=>{if(busy)return;sel=+b.dataset.i;view();const n=document.querySelector('.q[data-i="'+sel+'"]');if(n)n.focus()});if(fk!==undefined){const n=document.querySelector('.q[data-i="'+fk+'"]');if(n)n.focus()}}
+function detail(prog=-1){const a=A[sel],b=band(a),p=PB[pick(a)];
+$('#detail').innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div><h2>${a.n}</h2><span class="mu sm">${a.s}, ${a.st} ${a.st>1?'studios':'studio'}, $${a.arr}k ARR, capacity ${a.cap}%${a.ex?', Studio #2 intro booked':''}</span></div><div style="text-align:right"><span class="big">${score(a)}</span> <span class="bd b${b}" style="width:34px;height:34px;font-size:1.1rem">${b}</span><div class="mu sm">Customer Health Index, ${NM[b]}</div></div></div>
+<h3 style="margin-top:14px">Signals</h3>${sig(a).map(s=>`<div class="sig"><span>${s[0]} <span class="mu">${s[2]}%</span></span><span class="tr"><i style="width:${s[1]}%"></i></span><b>${Math.round(s[1])}</b></div>`).join('')}
+<h3 style="margin-top:14px">Next best playbook: ${p.n}</h3><p class="mu sm">Owner: ${p.o}. Time limit: ${p.sla}.</p>
+<ol class="st">${p.s.map((s,k)=>`<li class="${k<=prog?'d':''}"><b>${s[0]}</b> ${s[1]}</li>`).join('')}</ol>
+<button class="pri" id="run" ${busy?'disabled':''}>Run playbook</button>`;
+$('#run').onclick=()=>run(sel)}
+const view=()=>{kpi();queue();detail()};
+async function run(i){if(busy)return;busy=true;const g=gen;sel=i;const a=A[i],k=pick(a),p=PB[k],b0=band(a),s0=score(a);detail(-1);
+log('CRM',`Playbook “${p.n}” opened for ${a.n}`);
+for(let j=0;j<p.s.length;j++){await sleep(750);if(g!==gen)return;log(p.s[j][0],p.s[j][1]);detail(j)}
+await sleep(600);if(g!==gen)return;p.f(a);const b1=band(a);log('CRM',`${a.n}: ${NM[b0]} to ${NM[b1]}, CHI ${s0} to ${score(a)}`);busy=false;view()}
+async function tick(){if(busy)return;const o=order().find(i=>band(A[i])!='G'||(A[i].cap>=80&&!A[i].ex));if(o===undefined){log('CRM','All accounts healthy. Autopilot has nothing left to run.');stopAuto();return}await run(o)}
+function stopAuto(){clearInterval(timer);const b=$('#auto');b.setAttribute('aria-pressed','false');b.textContent='Start autopilot'}
+$('#auto').onclick=e=>{if(e.target.getAttribute('aria-pressed')=='true'){stopAuto();return}e.target.setAttribute('aria-pressed','true');e.target.textContent='Stop autopilot';tick();timer=setInterval(tick,2200)};
+$('#inj').onclick=()=>{const a=A[Math.floor(Math.random()*A.length)],r=Math.floor(Math.random()*3);
+if(r==0){a.u-=14;log('Product usage',`${a.n}: check-ins down 14% against baseline`)}else if(r==1){a.p+=5;log('Billing',`${a.n}: failed payments up to ${a.p}%`)}else{a.t+=2;a.q=Math.max(2,a.q-3);log('Support',`${a.n}: two new tickets and a low sentiment score`)}view()};
+$('#rst').onclick=()=>{gen++;busy=false;stopAuto();A=mk();LOG=[];$('#log').innerHTML='';sel=0;log('CRM','Sample portfolio reloaded');view()};
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-pressed',x===b));document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.id==b.dataset.tab))});
+$('#chips').innerHTML=SRC.map(s=>`<span class="chip">${s}</span>`).join('');
+/* onboarding */
+const OB=[['Readiness check','Exports, payment account and brand assets confirmed','Onboarding',10],['AI data mapping','2,340 members, 48 plans and 9,100 bookings mapped. 61 issues found, 54 fixed automatically, 7 sent for review','Claude',25],['Pilates launch pack','14 class types, 6 memberships, a waiver and 3 journeys applied','Product usage',15],['Validation report','Side-by-side totals shared for owner approval','CRM',15],['Go-live and first campaign','Cutover complete, first lead campaign drafted from brand data','Product usage',15],['Day 14 hypercare check','Usage reviewed and first Growth Audit scheduled','CRM',10]];
+const obDraw=n=>{$('#obs').innerHTML=OB.map((s,i)=>`<li class="${i<n?'d':''}"><b>${s[0]}</b> ${i<n?s[1]:''}</li>`).join('');$('#obp').style.width=n/OB.length*100+'%'};
+$('#obrun').onclick=async e=>{e.target.disabled=true;$('#obsum').textContent='';let m=0;for(let i=0;i<=OB.length;i++){obDraw(i);if(i<OB.length){await sleep(900);m+=OB[i][3];log(OB[i][2],'Harbor Pilates: '+OB[i][0].toLowerCase())}}obDraw(OB.length);$('#obsum').innerHTML=`<b>Specialist time: ${m} minutes</b> against about 3 hours in the manual flow (an assumption to verify). The owner approves once; everything else runs in the background.`;e.target.disabled=false};
+function cap(){const n=+$('#n').value;$('#nv').textContent=n;const lo=(sh,h)=>100+n*sh*h,m=lo(.25,3),f=lo(.15,1.5),mx=(240-100)/(.25*3),fx=(240-100)/(.15*1.5);
+const bar=(l,v)=>`<div class="bar"><span>${l}: ${Math.round(v)} hrs (${Math.round(v/240*100)}%)</span><span class="t" style="width:${Math.min(100,v/240*100)}%;background:${v>240?'var(--R)':v>204?'var(--A)':'var(--G)'}"></span></div>`;
+$('#cap').innerHTML=bar('Manual flow',m)+bar('With launch packs and AI mapping',f)+`<p style="margin-top:10px"><b>Inflow the pod can absorb: about ${Math.round(mx)} studios a month today, about ${Math.round(fx)} with the accelerator.</b></p>`}
+$('#n').oninput=cap;
+/* ledger */
+const L=[['Franchisor and multi-location roll-up reporting',420,9,'Chains'],['High-volume billing, freezes and dunning',380,6,'Chains'],['Open-gym memberships without class booking',260,7,'Gyms'],['Access control: turnstiles and kiosks beyond door locks',290,5,'Gyms'],['Revenue splitting and instructor payouts',210,14,'Boutique'],['Self-serve setup for owners who start alone',150,22,'Boutique']];let F='All';
+function led(){const r=L.filter(x=>F=='All'||x[3]==F).sort((a,b)=>b[1]-a[1]);$('#led').innerHTML=r.map(x=>`<div class="bar"><span>${x[0]}<br><small class="mu">${x[3]}, ${x[2]} deals or escalations</small></span><span class="t" style="width:${x[1]/420*60}%"></span><b>$${x[1]}k</b></div>`).join('');
+$('#ledt').textContent=`ARR blocked in this view: $${r.reduce((s,x)=>s+x[1],0)}k`;document.querySelectorAll('#flt button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k==F))}
+$('#flt').innerHTML=['All','Chains','Gyms','Boutique'].map(k=>`<button data-k="${k}">${k}</button>`).join('');document.querySelectorAll('#flt button').forEach(b=>b.onclick=()=>{F=b.dataset.k;led()});
+A=mk();log('CRM','Sample portfolio loaded: 12 accounts');view();obDraw(0);cap();led();
+</script>
+</body>
+</html>
